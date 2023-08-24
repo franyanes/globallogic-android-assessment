@@ -1,10 +1,9 @@
-package com.franyanes.listapp.productdetail
+package com.franyanes.listapp.presentation.productdetail
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -13,11 +12,11 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import com.franyanes.listapp.productlist.Product
-import com.franyanes.listapp.ui.theme.ListAppTheme
+import com.franyanes.listapp.domain.Product
+import com.franyanes.listapp.presentation.CoilImage
+import com.franyanes.listapp.presentation.theme.ListAppTheme
 
 class ProductDetailFragment : Fragment() {
 
@@ -25,12 +24,11 @@ class ProductDetailFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         return ComposeView(requireContext()).apply {
             setContent {
                 // TODO: Ver que onda el Theme.
                 ListAppTheme {
-                    // Uso `BoxWithConstraints` porque segun la docu sirve para la version landscape
                     Surface(
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colors.background
@@ -67,15 +65,13 @@ private fun ProductDetail(product: Product) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        Box(
+        CoilImage(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(4f / 3f)
-                .background(Color.Red)
+                .aspectRatio(4f / 3f),
+            product = product
         )
         Text(text = product.title)
         Text(text = product.description)
     }
 }
-
-private val previewProduct = Product("titulo 1", "descrp 1", "https://picsum.photos/100/100?image=1")

@@ -1,11 +1,9 @@
-package com.franyanes.listapp.productlist
+package com.franyanes.listapp.presentation.productlist
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,22 +14,22 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.*
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
+import androidx.fragment.app.viewModels
 import com.franyanes.listapp.R
-import com.franyanes.listapp.productdetail.ProductDetailFragment
-import com.franyanes.listapp.ui.theme.ListAppTheme
-
-// TODO: es una constante porque se usa para la card y la foto, esta bien?
-val ROUNDED_CORNER_DP = 10.dp
+import com.franyanes.listapp.domain.Product
+import com.franyanes.listapp.presentation.productdetail.ProductDetailFragment
+import com.franyanes.listapp.presentation.CoilImage
+import com.franyanes.listapp.presentation.theme.ListAppTheme
 
 class ProductListFragment : Fragment() {
 
@@ -53,7 +51,10 @@ class ProductListFragment : Fragment() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colors.background
                     ) {
-                        ProductList(productListViewModel.productList, ::navigateToProductDetail)
+                        productListViewModel.fetchProducts()
+                        val products =
+                            productListViewModel.products.observeAsState().value ?: return@Surface
+                        ProductList(products, ::navigateToProductDetail)
                     }
                 }
             }
@@ -72,7 +73,7 @@ class ProductListFragment : Fragment() {
 @Composable
 private fun ProductList(products: List<Product>, onProductClick: (Product) -> Unit) {
     LazyColumn(
-        contentPadding = PaddingValues(horizontal = 5.dp, vertical = 5.dp)
+        contentPadding = PaddingValues(horizontal = 6.dp, vertical = 6.dp)
     ) {
         items(products.size) { index ->
             ProductItem(products[index], onProductClick)
@@ -84,7 +85,7 @@ private fun ProductList(products: List<Product>, onProductClick: (Product) -> Un
 private fun ProductItem(product: Product, onClick: (Product) -> Unit) {
     Card(
         modifier = Modifier
-            .padding(horizontal = 5.dp, vertical = 5.dp)
+            .padding(horizontal = 6.dp, vertical = 6.dp)
             .fillMaxWidth(),
         elevation = 2.dp, // sombreado
         backgroundColor = Color.White,
@@ -95,33 +96,36 @@ private fun ProductItem(product: Product, onClick: (Product) -> Unit) {
                 onClick(product)
             }
         ) {
-//            Image(painter = Painter., contentDescription = )
-            Box(
+            CoilImage(
                 modifier = Modifier
                     .size(100.dp)
-                    .clip(RoundedCornerShape(ROUNDED_CORNER_DP))
-                    .background(Color.Red)
+                    .clip(RoundedCornerShape(ROUNDED_CORNER_DP)),
+                product = product
             )
             Column(
                 modifier = Modifier
                     .padding(
-                        vertical = 5.dp,
-                        horizontal = 10.dp)
+                        vertical = 6.dp,
+                        horizontal = 10.dp
+                    )
                     .fillMaxWidth()
                     .align(Alignment.Top)
             ) {
                 Text(text = product.title)
-                Text(text = product.description)
+                Text(text = product.description, maxLines = 2)
             }
         }
     }
 }
+
+private val ROUNDED_CORNER_DP = 10.dp
 
 @Preview(showBackground = true)
 @Composable
 private fun DefaultPreview() {
     val productListViewModel = ProductListViewModel()
     ListAppTheme {
-        ProductList(productListViewModel.productList, {})
+        val products = productListViewModel.products.observeAsState().value ?: return@ListAppTheme
+        ProductList(products, {})
     }
 }

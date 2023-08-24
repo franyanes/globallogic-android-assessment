@@ -1,4 +1,4 @@
-package com.franyanes.listapp.productlist
+package com.franyanes.listapp.domain
 
 import java.io.Serializable
 

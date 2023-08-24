@@ -1,4 +1,4 @@
-package com.franyanes.listapp.ui.theme
+package com.franyanes.listapp.presentation.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
