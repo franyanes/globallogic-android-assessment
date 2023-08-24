@@ -37,7 +37,9 @@ import com.franyanes.listapp.domain.Product
 import com.franyanes.listapp.presentation.productdetail.ProductDetailFragment
 import com.franyanes.listapp.presentation.CoilImage
 import com.franyanes.listapp.presentation.theme.ListAppTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ProductListFragment : Fragment() {
 
     /*
@@ -146,9 +148,14 @@ private val ROUNDED_CORNER_DP = 10.dp
 @Preview(showBackground = true)
 @Composable
 private fun DefaultPreview() {
-    val productListViewModel = ProductListViewModel()
     ListAppTheme {
-        val products = productListViewModel.products.observeAsState().value ?: return@ListAppTheme
-        ProductList(products, {})
+        ProductList(previewProductList, {})
     }
 }
+
+private val previewProductList = listOf<Product>(
+    Product("titulo 1", "descrp 1", "https://picsum.photos/100/100?image=1"),
+    Product("titulo 2", "descrp 2", "https://picsum.photos/100/100?image=2"),
+    Product("titulo 3", "descrp 3", "https://picsum.photos/100/100?image=3"),
+    Product("titulo 4", "anduvo el viewmodel", "https://picsum.photos/100/100?image=4"),
+)
