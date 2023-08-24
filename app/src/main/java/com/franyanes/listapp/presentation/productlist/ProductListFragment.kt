@@ -20,8 +20,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
@@ -86,19 +93,21 @@ private fun ProductItem(product: Product, onClick: (Product) -> Unit) {
     Card(
         modifier = Modifier
             .padding(horizontal = 6.dp, vertical = 6.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .height(100.dp),
         elevation = 2.dp, // sombreado
         backgroundColor = Color.White,
         shape = RoundedCornerShape(corner = CornerSize(ROUNDED_CORNER_DP))
     ) {
         Row(
-            modifier = Modifier.clickable {
-                onClick(product)
-            }
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable { onClick(product) }
         ) {
             CoilImage(
                 modifier = Modifier
-                    .size(100.dp)
+                    .aspectRatio(1f)
+                    .fillMaxSize()
                     .clip(RoundedCornerShape(ROUNDED_CORNER_DP)),
                 product = product
             )
@@ -111,8 +120,22 @@ private fun ProductItem(product: Product, onClick: (Product) -> Unit) {
                     .fillMaxWidth()
                     .align(Alignment.Top)
             ) {
-                Text(text = product.title)
-                Text(text = product.description, maxLines = 2)
+                Text(
+                    text = product.title,
+                    overflow = TextOverflow.Ellipsis,
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp
+                    )
+                )
+                Text(
+                    text = product.description,
+                    overflow = TextOverflow.Ellipsis,
+                    style = TextStyle(
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 14.sp
+                    )
+                )
             }
         }
     }
